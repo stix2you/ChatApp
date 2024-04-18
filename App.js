@@ -2,7 +2,6 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button } from 'react-native';
 // import Screen1 and Screen2 components
 import Screen1 from './components/Screen1';
-import Screen2 from './components/Screen2';
 import Chat from './components/Chat';
 // import react Navigation
 import { NavigationContainer } from '@react-navigation/native';
