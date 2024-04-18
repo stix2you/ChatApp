@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, TextInput, ImageBackground } from 'react-native';
+import { useState, useEffect } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, TextInput, ImageBackground, Keyboard, KeyboardAvoidingView, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 // Screen1 component, opening screen of app, has input fields for user name and background color selection
@@ -11,39 +11,76 @@ const Screen1 = ({ navigation }) => {
 
    const image = require('../assets/Background_Image.png');    // Background image specified by project brief
 
+   const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+   useEffect(() => {
+      const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+         setKeyboardVisible(true); // Set state to true when keyboard is shown
+      });
+      const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+         setKeyboardVisible(false); // Set state to false when keyboard is hidden
+      });
+
+      return () => {
+         showSubscription.remove();
+         hideSubscription.remove();
+      };
+   }, []);
+
    return (
       <ImageBackground source={image} resizeMode="cover" style={styles.image}>
          <View style={styles.container}>
-            <Text style={styles.textDisplay}>App Title</Text>
+            <Text style={styles.textDisplay}
+               accessible={true}
+               accessibilityLabel="App Title"
+               accessibilityRole="text">
+               App Title</Text>
             <View style={styles.inputContainer}>
                <TextInput
                   style={styles.textInput}
                   value={name}
+                  accessible={true}
+                  accessibilityLabel="Name Input Field"
+                  accessibilityHint="Lets you input the name you wish to use while chatting."
                   onChangeText={setName}
                   placeholder='Your Name'
                />
                <Icon name="person-outline" size={30} color="#ccc" style={styles.icon} />
-               <Text style={styles.colorChoiceLabel}>Choose Background Color:</Text>
-               <View style={styles.colorContainer}>
-                  {colors.map((color) => (
-                     <TouchableOpacity
-                        key={color}
-                        style={[styles.colorCircle, { backgroundColor: color, borderWidth: selectedColor === color ? 2 : 0 }]}
-                        onPress={() => setSelectedColor(color)}
-                     />
-                  ))}
-               </View>
-               <TouchableOpacity
-                  style={styles.button}
-                  title='Start Chatting'
-
-                  onPress={() => navigation.navigate('Screen2', { name: name, selectedColor: selectedColor })}
-               >
-                  <Text style={styles.buttonText}>Start Chatting</Text>
-               </TouchableOpacity>
+               {Platform.OS === "ios" ? <KeyboardAvoidingView behavior="padding" /> : null}
+               {!keyboardVisible && (
+                  <Text style={styles.colorChoiceLabel}>Choose Background Color:</Text>
+               )}
+               {!keyboardVisible && (
+                  <View style={styles.colorContainer}>
+                     {colors.map((color) => (
+                        <TouchableOpacity
+                           accessible={true}
+                           accessibilityLabel="Color Option"
+                           accessibilityHint="Lets you choose the background color for the chat dialogue."
+                           accessibilityRole="button"
+                           key={color}
+                           style={[styles.colorCircle, { backgroundColor: color, borderWidth: selectedColor === color ? 2 : 0 }]}
+                           onPress={() => setSelectedColor(color)}
+                        />
+                     ))}
+                  </View>
+               )}
+               {!keyboardVisible && (
+                  <TouchableOpacity
+                     style={styles.button}
+                     title='Start Chatting'
+                     accessible={true}
+                     accessibilityLabel="Start Chatting Button"
+                     accessibilityHint="Enters Chatting Dialogue Screen."
+                     accessibilityRole="button"
+                     onPress={() => navigation.navigate('Chat', { name: name, selectedColor: selectedColor })}
+                  >
+                     <Text style={styles.buttonText}>Start Chatting</Text>
+                  </TouchableOpacity>
+               )}
             </View>
          </View>
-      </ImageBackground>
+      </ImageBackground >
    );
 }
 
@@ -82,8 +119,8 @@ const styles = StyleSheet.create({
    },
    // Style for the text input field itself
    textInput: {
-      flex: 1,
       width: "88%",
+      height: 60,
       alignItems: 'center', // Center the text input horizontally within the parent container
       borderColor: 'black',
       borderWidth: 1,
@@ -98,7 +135,7 @@ const styles = StyleSheet.create({
    // Style for the icon inside the text input field
    icon: {
       position: 'absolute', // Position the icon absolutely within the inputContainer, NOT RELATIVE TO TEXT FIELD
-      left: 30, 
+      left: 30,
       top: 35,
    },
    // Style for the color choice label
@@ -124,10 +161,10 @@ const styles = StyleSheet.create({
    },
    // Style for the button to navigate to the next screen
    button: {
-      flex: 1,
+      height: 60,  // Button height
       backgroundColor: '#757083', // Button color
       alignItems: 'center', // Center the button horizontally within the parent container
-      width: '88%',  
+      width: '88%',
       padding: 12,  // Padding inside the button
       margin: 20,
    },
