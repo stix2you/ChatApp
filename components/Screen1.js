@@ -36,7 +36,7 @@ const Screen1 = ({ navigation }) => {
                   style={styles.button}
                   title='Start Chatting'
 
-                  onPress={() => navigation.navigate('Screen2', { name: name })}
+                  onPress={() => navigation.navigate('Screen2', { name: name, selectedColor: selectedColor })}
                >
                   <Text style={styles.buttonText}>Start Chatting</Text>
                </TouchableOpacity>
@@ -69,39 +69,41 @@ const styles = StyleSheet.create({
    inputContainer: {
       flex: 1,
       backgroundColor: '#FFFFFF',
-      position: 'absolute',
+      position: 'relative',  // Position the container relative to the parent
       width: '88%',
       height: '44%',
-      paddingLeft: 10,
-      paddingRight: 10,
+      alighItems: 'center',  // Center the container horizontally
       bottom: '4%',
    },
    textInput: {
+      flex: 1,
       width: "88%",
+      alignItems: 'center', // Center the text input horizontally within the parent container
       borderColor: 'black',
       borderWidth: 1,
       borderRadius: 2,
-      margin: 15,
+      margin: 20,
       fontSize: 16,
       fontWeight: '300',
       color: '#757083',
-      paddingVertical: 15,
-      paddingLeft: 45, // Adjust padding to make space for the icon inside the field
+      paddingVertical: 10,  // Add padding to the top and bottom of the text input
+      paddingLeft: 50, // Adjust padding to make space for the icon inside the field
    },
    icon: {
-      position: 'absolute', // Position the icon absolutely
-      left: 35, // Position based on your styling preferences
-      top: 30, // Adjust top to vertically center the icon with the text
+      position: 'absolute', // Position the icon absolutely within the inputContainer (not the text field itself)
+      left: 30, // Position based on your styling preferences
+      top: 35, // Adjust top to vertically center the icon with the text
    },
    colorChoiceLabel: {
+      flex: 1,
       fontSize: 16,
-      marginBottom: 10,
       marginLeft: 15,
    },
    colorContainer: {
+      flex: 1,
       flexDirection: 'row',
       justifyContent: 'space-around',
-      marginBottom: 20,
+      marginBottom: 10,
       width: '100%',
    },
    colorCircle: {
@@ -111,16 +113,17 @@ const styles = StyleSheet.create({
       borderColor: 'black',
    },
    button: {
+      flex: 1,
       backgroundColor: '#757083', // Button color
+      alignItems: 'center', // Center the button horizontally within the parent container
       width: '88%',
-      padding: 12,
+      padding: 12,  // Padding inside the button
       margin: 20,
-      height: 60,
    },
    buttonText: {
       fontSize: 16,         // Font size
       fontWeight: '800',    // Font weight
-      paddingTop: 4,          // Padding inside the button
+      paddingTop: 6.5,          // Padding inside the button
       color: '#FFFFFF',     // Font color
       textAlign: 'center',  // Center the text inside the button
    }
