@@ -14,8 +14,7 @@ const Chat = ({ route, navigation, db }) => { // the route prop consists of the 
       navigation.setOptions({ title: name });
    }, []);
 
-   // set state of messages to an array of objects, no dependencies
-   // images and videos can be set as objects with a uri property, see Gifted Text Documentation in documentation folder
+   // Query the messages collection in Firestore, create a listener for changes to the messages collection in Firestore
    useEffect(() => {
       navigation.setOptions({ title: name });   // set the title of the screen to the name value
       const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));  // query the messages collection in Firestore
@@ -28,10 +27,10 @@ const Chat = ({ route, navigation, db }) => { // the route prop consists of the 
                createdAt: new Date(doc.data().createdAt.toMillis())
             })
          })
-         setMessages(newMessages);
+         setMessages(newMessages);  // set the messages state to the newMessages array
       })
       return () => {
-         if (unsubMessages) unsubMessages();
+         if (unsubMessages) unsubMessages();  // unsubscribe from the listener when the component unmounts
       }
    }, []);
 

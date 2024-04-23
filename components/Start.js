@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import {
    StyleSheet, View, Text, TouchableOpacity,
    TextInput, ImageBackground, Keyboard,
-   KeyboardAvoidingView, Platform, Alert
-} from 'react-native';
+   KeyboardAvoidingView, Platform} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { getAuth, signInAnonymously } from "firebase/auth";
 
@@ -42,7 +41,7 @@ const Start = ({ navigation }) => {
       });
    };
 
-   // sign in anonymously
+   // Sign in anonymously
    const signInUser = () => {
       signInAnonymously(auth)
          .then(result => {  // if successful, navigate to ShoppingLists screen
@@ -54,6 +53,7 @@ const Start = ({ navigation }) => {
          })
    }
 
+   // useEffect hook to listen for keyboard events
    useEffect(() => {
       const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
          setKeyboardVisible(true); // Set state to true when keyboard is shown
