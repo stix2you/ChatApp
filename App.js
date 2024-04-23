@@ -1,5 +1,5 @@
-// import react-native-config to access environment variables
-import Config from 'react-native-config';
+// import expo constants to access environment variables
+import Constants from 'expo-constants';
 
 // React and Expo imports
 import { StyleSheet } from 'react-native';
@@ -40,14 +40,22 @@ const Stack = createNativeStackNavigator();  // returns an object with two prope
 // this can be placed on any navigator, not just the stack navigator.
 
 const App = () => {
+   // set expo constants to access environment variables
+   const { apiKey } = Constants.expoConfig.extra;
+   const { authDomain } = Constants.expoConfig.extra;
+   const { projectId } = Constants.expoConfig.extra;
+   const { storageBucket } = Constants.expoConfig.extra;
+   const { messagingSenderId } = Constants.expoConfig.extra;
+   const { appId } = Constants.expoConfig.extra;
+
    // Firebase configuration
    const firebaseConfig = {
-      apiKey: Config.FIREBASE_API_KEY,
-      authDomain: Config.FIREBASE_AUTH_DOMAIN,
-      projectId: Config.FIREBASE_PROJECT_ID,
-      storageBucket: Config.FIREBASE_STORAGE_BUCKET,
-      messagingSenderId: Config.FIREBASE_MESSAGING_SENDER_ID,
-      appId: Config.FIREBASE_APP_ID
+      apiKey: apiKey,
+      authDomain: authDomain,
+      projectId: projectId,
+      storageBucket: storageBucket,
+      messagingSenderId: messagingSenderId,
+      appId: appId
    };
 
    // Initialize Firebase
