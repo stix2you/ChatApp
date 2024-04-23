@@ -1,9 +1,18 @@
 import { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, TextInput, ImageBackground, Keyboard, KeyboardAvoidingView, Platform } from 'react-native';
+import {
+   StyleSheet, View, Text, TouchableOpacity,
+   TextInput, ImageBackground, Keyboard,
+   KeyboardAvoidingView, Platform, Alert
+} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { getAuth, signInAnonymously } from "firebase/auth";
 
-// Screen1 component, opening screen of app, has input fields for user name and background color selection
-const Screen1 = ({ navigation }) => {
+import Toast from 'react-native-toast-message';
+
+// Start component, opening screen of app, has input fields for user name and background color selection
+const Start = ({ navigation }) => {
+   const auth = getAuth();
+
    const [name, setName] = useState('');  // Initialize name state variable
    const [selectedColor, setSelectedColor] = useState('#090C08'); // Initialize selectedColor state variable
 
@@ -12,6 +21,38 @@ const Screen1 = ({ navigation }) => {
    const image = require('../assets/Background_Image.png');    // Background image specified by project brief
 
    const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+   // configure Toast messages
+   const showSuccessToast = () => {
+      Toast.show({
+         type: 'success',
+         position: 'bottom',
+         bottomOffset: 150,
+         text1: 'Signed in Successfully!',
+         visibilityTime: 3000,
+      });
+   };
+   const showErrorToast = () => {
+      Toast.show({
+         type: 'error',
+         position: 'bottom',
+         bottomOffset: 150,
+         text1: 'Unable to sign in, contact developer or try later!',
+         visibilityTime: 3000,
+      });
+   };
+
+   // sign in anonymously
+   const signInUser = () => {
+      signInAnonymously(auth)
+         .then(result => {  // if successful, navigate to ShoppingLists screen
+            navigation.navigate('Chat', { userID: result.user.uid, name: name, selectedColor: selectedColor });
+            showSuccessToast();
+         })
+         .catch((error) => {  // if error, show an alert
+            showErrorToast();
+         })
+   }
 
    useEffect(() => {
       const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
@@ -73,7 +114,7 @@ const Screen1 = ({ navigation }) => {
                      accessibilityLabel="Start Chatting Button"
                      accessibilityHint="Enters Chatting Dialogue Screen."
                      accessibilityRole="button"
-                     onPress={() => navigation.navigate('Chat', { name: name, selectedColor: selectedColor })}
+                     onPress={signInUser}
                   >
                      <Text style={styles.buttonText}>Start Chatting</Text>
                   </TouchableOpacity>
@@ -178,4 +219,4 @@ const styles = StyleSheet.create({
    }
 });
 
-export default Screen1;
+export default Start;

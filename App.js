@@ -1,11 +1,26 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button } from 'react-native';
-// import Screen1 and Screen2 components
-import Screen1 from './components/Screen1';
-import Chat from './components/Chat';
-// import react Navigation
+// require('dotenv').config() is used to load environment variables from a .env file into process.env
+require('dotenv').config();
+
+// React and Expo imports
+import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
+
+// Firebase and Firestore imports
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+
+// Component imports
+import Start from './components/Start';
+import Chat from './components/Chat';
+
+// Logbox Import/Implement --Ignore warning about AsyncStorage
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(["AsyncStorage has been extracted from"]);
+LogBox.ignoreLogs(["@firebase/auth:"]);
+LogBox.ignoreAllLogs();
+
 
 // Create the navigator
 const Stack = createNativeStackNavigator();  // returns an object with two properties: Navigator and Screen
@@ -25,21 +40,66 @@ const Stack = createNativeStackNavigator();  // returns an object with two prope
 // this can be placed on any navigator, not just the stack navigator.
 
 const App = () => {
+   // Firebase configuration
+   const firebaseConfig = {
+      apiKey: process.env.FIREBASE_API_KEY,
+      authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+      messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+      appId: process.env.FIREBASE_APP_ID
+   };
+
+   // Initialize Firebase
+   const app = initializeApp(firebaseConfig);
+
+   // Initialize Cloud Firestore and get a reference to the service
+   const db = getFirestore(app);
+
+   const toastConfig = {
+      success: (props) => (
+         <BaseToast
+            {...props}
+            style={{ borderLeftColor: 'green' }}
+            contentContainerStyle={{ paddingHorizontal: 15 }}
+            text1Style={{
+               fontSize: 17,
+               fontWeight: '700'
+            }}
+         />
+      ),
+      error: (props) => (
+         <ErrorToast
+            {...props}
+            style={{ borderLeftColor: 'red' }}
+            contentContainerStyle={{ paddingHorizontal: 15 }}
+            text1Style={{
+               fontSize: 17,
+               fontWeight: '700'
+            }}
+         />
+      ),
+   };
+
    return (
-      <NavigationContainer>
-         <Stack.Navigator
-            initialRouteName="Screen1"
-         >
-            <Stack.Screen
-               name="Screen1"
-               component={Screen1}
-            />
-            <Stack.Screen
-               name="Chat"
-               component={Chat}
-            />
-         </Stack.Navigator>
-      </NavigationContainer>
+      <>
+         <NavigationContainer>
+            <Stack.Navigator
+               initialRouteName="Start"
+            >
+               <Stack.Screen
+                  name="Start"
+                  component={Start}
+               />
+               <Stack.Screen
+                  name="Chat"
+               >
+                  {props => <Chat db={db} {...props} />}
+               </Stack.Screen>
+            </Stack.Navigator>
+         </NavigationContainer>
+         <Toast config={toastConfig} />
+      </>
    );
 }
 
