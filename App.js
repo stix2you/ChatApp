@@ -1,5 +1,5 @@
-// require('dotenv').config() is used to load environment variables from a .env file into process.env
-require('dotenv').config();
+// import react-native-config to access environment variables
+import Config from 'react-native-config';
 
 // React and Expo imports
 import { StyleSheet } from 'react-native';
@@ -42,12 +42,12 @@ const Stack = createNativeStackNavigator();  // returns an object with two prope
 const App = () => {
    // Firebase configuration
    const firebaseConfig = {
-      apiKey: process.env.FIREBASE_API_KEY,
-      authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-      messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-      appId: process.env.FIREBASE_APP_ID
+      apiKey: Config.FIREBASE_API_KEY,
+      authDomain: Config.FIREBASE_AUTH_DOMAIN,
+      projectId: Config.FIREBASE_PROJECT_ID,
+      storageBucket: Config.FIREBASE_STORAGE_BUCKET,
+      messagingSenderId: Config.FIREBASE_MESSAGING_SENDER_ID,
+      appId: Config.FIREBASE_APP_ID
    };
 
    // Initialize Firebase
