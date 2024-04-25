@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native';
+import { StyleSheet, View, KeyboardAvoidingView, Platform, Button } from 'react-native';
 import { GiftedChat, Bubble, InputToolbar } from "react-native-gifted-chat";
 import { collection, addDoc, onSnapshot, query, orderBy } from 'firebase/firestore';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from 'react-native-toast-message';
 
 const Chat = ({ route, navigation, db, isConnected }) => { // the route prop consists of the route.params object, 
    const [messages, setMessages] = useState([]);  // set state of messages to an empty array
@@ -96,6 +97,46 @@ const Chat = ({ route, navigation, db, isConnected }) => { // the route prop con
       if (isConnected) return <InputToolbar {...props} />;
       else return null;
    }
+
+   // LOGOUT FUNCTIONALITY BELOW
+   // configure the Toast message to show when the user logs out
+   const showLogoutToast = () => {
+      Toast.show({
+         type: 'success',
+         position: 'bottom',
+         bottomOffset: 150,
+         text1: 'Logged out Successfully!',
+         visibilityTime: 3000,
+      });
+   };
+
+   // handleLogout function to clear AsyncStorage and navigate to the Start screen
+   const handleLogout = async () => {
+      try {
+         await AsyncStorage.clear(); // This clears all data; use removeItem if you want to clear specific data
+         showLogoutToast();
+         console.log('Logout successful, storage cleared.');
+         navigation.reset({  // reset the navigation stack to the Start screen
+            index: 0,
+            routes: [{ name: 'Start' }],
+         });
+      } catch (error) {
+         console.error('Logout failed', error);
+      }
+   }
+
+   // set the headerRight option to a red Button component that calls the handleLogout function when pressed
+   useEffect(() => {
+      navigation.setOptions({
+         headerRight: () => (
+            <Button
+               onPress={handleLogout}
+               title="Logout"
+               color="#ff5c5c"
+            />
+         )
+      });
+   }, [navigation]);
 
    // return the GiftedChat component with props: messages, onSend function, and user prop -- see documentation for more props
    return (

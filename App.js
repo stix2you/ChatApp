@@ -23,23 +23,8 @@ LogBox.ignoreLogs(["AsyncStorage has been extracted from"]);
 LogBox.ignoreLogs(["@firebase/auth:"]);
 LogBox.ignoreAllLogs();
 
-
 // Create the navigator
 const Stack = createNativeStackNavigator();  // returns an object with two properties: Navigator and Screen
-
-// Think of a stack navigator like a pile of paper: you start with one sheet, then place a second sheet on 
-// top of it, then a third sheet, and so on. To get back to the bottom of the pile, you’d remove the uppermost 
-// sheet of paper from your stack, then the second, and then the third. This concept is often used in app navigation.
-
-// Stack Navigator is a type of navigator that provides a way for your app to transition between screens where each
-// new screen is placed on top of a stack. The stack navigator provides a way for your app to transition between screens
-// where each new screen is placed on top of a stack.
-
-// Each STACK SCREEN needs to receive two props: name and component. The name prop is a string that will be used to
-// identify the screen, while the component prop is the component that will be rendered when the screen is active.
-
-// initialRouteName prop is used to specify the initial screen that will be displayed when the navigator is first rendered.
-// this can be placed on any navigator, not just the stack navigator.
 
 const App = () => {
    // set expo constants to access environment variables
