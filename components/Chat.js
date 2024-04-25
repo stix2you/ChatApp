@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native';
-import { GiftedChat, Bubble } from "react-native-gifted-chat";
-import { collection, addDoc, onSnapshot, query, where, orderBy } from 'firebase/firestore';
+import { GiftedChat, Bubble, InputToolbar } from "react-native-gifted-chat";
+import { collection, addDoc, onSnapshot, query, orderBy } from 'firebase/firestore';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const Chat = ({ route, navigation, db }) => { // the route prop consists of the route.params object, 
+const Chat = ({ route, navigation, db, isConnected }) => { // the route prop consists of the route.params object, 
    const [messages, setMessages] = useState([]);  // set state of messages to an empty array
    const { name, userID, selectedColor } = route.params;  // Destructure the route.params object to get the name and selectedColor values
    // this assigns the name and selectedColor values from the route.params object to the name and selectedColor variables within 
@@ -14,25 +15,53 @@ const Chat = ({ route, navigation, db }) => { // the route prop consists of the 
       navigation.setOptions({ title: name });
    }, []);
 
+   const loadCachedMessages = async () => {
+      const cachedMessages = await AsyncStorage.getItem("chat_messages") || [];
+      setMessages(JSON.parse(cachedMessages));
+   }
+
+   let unsubMessages;
+
    // Query the messages collection in Firestore, create a listener for changes to the messages collection in Firestore
    useEffect(() => {
-      navigation.setOptions({ title: name });   // set the title of the screen to the name value
-      const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));  // query the messages collection in Firestore
-      const unsubMessages = onSnapshot(q, (docs) => {  // create a listener for changes to the messages collection in Firestore
-         let newMessages = [];
-         docs.forEach(doc => {
-            newMessages.push({
-               id: doc.id,
-               ...doc.data(),
-               createdAt: new Date(doc.data().createdAt.toMillis())
+
+      if (isConnected === true) {
+
+         // unregister current onSnapshot() listener to avoid registering multiple listeners when useEffect code is re-executed.
+         if (unsubMessages) unsubMessages();
+         unsubMessages = null;  // set unsubMessages to null
+
+         // Create a query to get the messages collection in Firestore, order the messages by createdAt in descending order
+         const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
+
+         // unsubscribe from the listener when the component unmounts
+         unsubMessages = onSnapshot(q, (docs) => {
+            let newMessages = [];
+            docs.forEach(doc => {
+               newMessages.push({
+                  id: doc.id,
+                  ...doc.data(),
+                  createdAt: new Date(doc.data().createdAt.toMillis())
+               })
             })
+            cacheMessages(newMessages);  // cache the newMessages array
+            setMessages(newMessages);  // set the messages state to the newMessages array
          })
-         setMessages(newMessages);  // set the messages state to the newMessages array
-      })
+
+      } else loadCachedMessages();  // if not connected, load the cached messages
+
       return () => {
          if (unsubMessages) unsubMessages();  // unsubscribe from the listener when the component unmounts
       }
    }, []);
+
+   const cacheMessages = async (messagesToCache) => {
+      try {
+         await AsyncStorage.setItem('chat_messages', JSON.stringify(messagesToCache));
+      } catch (error) {
+         console.log(error.message);
+      }
+   }
 
    // onSend function to append new messages to previous messages
    const onSend = (newMessages) => {
@@ -62,11 +91,18 @@ const Chat = ({ route, navigation, db }) => { // the route prop consists of the 
       />
    }
 
+   // renderInputToolbar function to render the input toolbar if the user is connected
+   const renderInputToolbar = (props) => {
+      if (isConnected) return <InputToolbar {...props} />;
+      else return null;
+   }
+
    // return the GiftedChat component with props: messages, onSend function, and user prop -- see documentation for more props
    return (
       <View style={styles.container}>
          <GiftedChat
             messages={messages}
+            renderInputToolbar={renderInputToolbar}
             renderBubble={renderBubble}
             onSend={messages => onSend(messages)}
             user={{

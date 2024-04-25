@@ -2,14 +2,16 @@
 import Constants from 'expo-constants';
 
 // React and Expo imports
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Alert } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
+import { useNetInfo } from '@react-native-community/netinfo';
+import { useEffect } from "react";
 
 // Firebase and Firestore imports
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, disableNetwork, enableNetwork } from "firebase/firestore";
 
 // Component imports
 import Start from './components/Start';
@@ -89,6 +91,18 @@ const App = () => {
       ),
    };
 
+   // useNetInfo hook to get the current network connection status
+   const connectionStatus = useNetInfo();
+
+   useEffect(() => {
+      if (connectionStatus.isConnected === false) {
+         Alert.alert("Connection lost!");
+         disableNetwork(db);
+      } else {
+         enableNetwork(db);
+      }
+   }, [connectionStatus.isConnected]);
+
    return (
       <>
          <NavigationContainer>
@@ -102,7 +116,7 @@ const App = () => {
                <Stack.Screen
                   name="Chat"
                >
-                  {props => <Chat db={db} {...props} />}
+                  {props => <Chat isConnected={connectionStatus.isConnected} db={db} {...props} />}
                </Stack.Screen>
             </Stack.Navigator>
          </NavigationContainer>
