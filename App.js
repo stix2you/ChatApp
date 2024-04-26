@@ -76,12 +76,24 @@ const App = () => {
       ),
    };
 
+   // Function to show a Toast message when the connection is lost
+   const showConnectionLostToast = () => {
+      Toast.show({
+         type: 'error',
+         position: 'bottom',
+         bottomOffset: 150,
+         text1: 'Connection lost!',
+         autoHide: false,
+         swipeable: true,
+      });
+   };
+
    // useNetInfo hook to get the current network connection status
    const connectionStatus = useNetInfo();
 
    useEffect(() => {
       if (connectionStatus.isConnected === false) {
-         Alert.alert("Connection lost!");
+         showConnectionLostToast();
          disableNetwork(db);
       } else {
          enableNetwork(db);
