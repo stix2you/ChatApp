@@ -53,7 +53,7 @@ const Start = ({ navigation }) => {
          })
    }
 
-   // useEffect hook to listen for keyboard events
+   // useEffect hook to listen for keyboard events, this is used to hide the color selection when the keyboard is visible
    useEffect(() => {
       const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
          setKeyboardVisible(true); // Set state to true when keyboard is shown

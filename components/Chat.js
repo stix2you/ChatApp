@@ -4,8 +4,10 @@ import { GiftedChat, Bubble, InputToolbar } from "react-native-gifted-chat";
 import { collection, addDoc, onSnapshot, query, orderBy } from 'firebase/firestore';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from 'react-native-toast-message';
+import CustomActions from './CustomActions';
+import MapView from 'react-native-maps';
 
-const Chat = ({ route, navigation, db, isConnected }) => { // the route prop consists of the route.params object, 
+const Chat = ({ route, navigation, db, isConnected, storage }) => { // the route prop consists of the route.params object, 
    const [messages, setMessages] = useState([]);  // set state of messages to an empty array
    const { name, userID, selectedColor } = route.params;  // Destructure the route.params object to get the name and selectedColor values
    // this assigns the name and selectedColor values from the route.params object to the name and selectedColor variables within 
@@ -15,12 +17,7 @@ const Chat = ({ route, navigation, db, isConnected }) => { // the route prop con
    useEffect(() => {
       navigation.setOptions({ title: name });
    }, []);
-
-   const loadCachedMessages = async () => {
-      const cachedMessages = await AsyncStorage.getItem("chat_messages") || [];
-      setMessages(JSON.parse(cachedMessages));
-   }
-
+   
    let unsubMessages;
 
    // Query the messages collection in Firestore, create a listener for changes to the messages collection in Firestore
@@ -54,8 +51,15 @@ const Chat = ({ route, navigation, db, isConnected }) => { // the route prop con
       return () => {
          if (unsubMessages) unsubMessages();  // unsubscribe from the listener when the component unmounts
       }
-   }, []);
+   }, [isConnected]);
 
+   // loadCachedMessages function to load cached messages from AsyncStorage
+   const loadCachedMessages = async () => {
+      const cachedMessages = await AsyncStorage.getItem("chat_messages") || [];
+      setMessages(JSON.parse(cachedMessages));
+   }
+
+   // cacheMessages function to cache messages in AsyncStorage
    const cacheMessages = async (messagesToCache) => {
       try {
          await AsyncStorage.setItem('chat_messages', JSON.stringify(messagesToCache));
@@ -138,6 +142,34 @@ const Chat = ({ route, navigation, db, isConnected }) => { // the route prop con
       });
    }, [navigation]);
 
+   const renderCustomActions = (props) => {
+      return <CustomActions storage={storage} userID={userID} {...props} />;
+   };
+
+   // renderCustomView function to render the map view ONLY when a location is sent
+   const renderCustomView = (props) => {
+      const { currentMessage } = props;
+      if (currentMessage.location) {
+         return (
+            <MapView
+               style={{
+                  width: 150,
+                  height: 100,
+                  borderRadius: 13,
+                  margin: 3
+               }}
+               region={{
+                  latitude: currentMessage.location.latitude,
+                  longitude: currentMessage.location.longitude,
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0421,
+               }}
+            />
+         );
+      }
+      return null;
+   }
+
    // return the GiftedChat component with props: messages, onSend function, and user prop -- see documentation for more props
    return (
       <View style={styles.container}>
@@ -146,6 +178,8 @@ const Chat = ({ route, navigation, db, isConnected }) => { // the route prop con
             renderInputToolbar={renderInputToolbar}
             renderBubble={renderBubble}
             onSend={messages => onSend(messages)}
+            renderActions={renderCustomActions}  // render the custom actions component, creates the circular button
+            renderCustomView={renderCustomView}   // render the custom view component, creates the map view
             user={{
                _id: userID,
                name: name

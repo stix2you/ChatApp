@@ -12,6 +12,7 @@ import { useEffect } from "react";
 // Firebase and Firestore imports
 import { initializeApp } from "firebase/app";
 import { getFirestore, disableNetwork, enableNetwork } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 // Component imports
 import Start from './components/Start';
@@ -50,6 +51,9 @@ const App = () => {
 
    // Initialize Cloud Firestore and get a reference to the service
    const db = getFirestore(app);
+
+   // Initialize Firebase Storage handler
+   const storage = getStorage(app);
 
    const toastConfig = {
       success: (props) => (
@@ -91,11 +95,12 @@ const App = () => {
    // useNetInfo hook to get the current network connection status
    const connectionStatus = useNetInfo();
 
+   // useEffect hook to check the connection status and disable Firestore network if the connection is lost
    useEffect(() => {
       if (connectionStatus.isConnected === false) {
          showConnectionLostToast();
          disableNetwork(db);
-      } else {
+      } else if (connectionStatus.isConnected === true) {
          enableNetwork(db);
       }
    }, [connectionStatus.isConnected]);
@@ -113,7 +118,12 @@ const App = () => {
                <Stack.Screen
                   name="Chat"
                >
-                  {props => <Chat isConnected={connectionStatus.isConnected} db={db} {...props} />}
+                  {props => <Chat
+                     isConnected={connectionStatus.isConnected}
+                     db={db} {...props}
+                     storage={storage}
+                     {...props}
+                  />}
                </Stack.Screen>
             </Stack.Navigator>
          </NavigationContainer>
