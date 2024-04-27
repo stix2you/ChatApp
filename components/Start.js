@@ -2,44 +2,20 @@ import { useState, useEffect } from 'react';
 import {
    StyleSheet, View, Text, TouchableOpacity,
    TextInput, ImageBackground, Keyboard,
-   KeyboardAvoidingView, Platform} from 'react-native';
+   KeyboardAvoidingView, Platform
+} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { getAuth, signInAnonymously } from "firebase/auth";
+import Toast from 'react-native-toast-message'; // TOAST configuration end of file below styles
 
-import Toast from 'react-native-toast-message';
-
-// Start component, opening screen of app, has input fields for user name and background color selection
+// START component, opening screen of app, has input fields for user name and background color selection
 const Start = ({ navigation }) => {
-   const auth = getAuth();
-
+   const auth = getAuth();  // getAuth() function to initialize the Firebase Authentication service
    const [name, setName] = useState('');  // Initialize name state variable
    const [selectedColor, setSelectedColor] = useState('#090C08'); // Initialize selectedColor state variable
-
-   const colors = ['#090C08', '#474056', '#8A95A5', '#B9C6AE'];   // Array of color options specified by project brief
-
+   const colors = ['#090C08', '#474056', '#8A95A5', '#B9C6AE'];   // Array of color options specified by project brief, do not change
    const image = require('../assets/Background_Image.png');    // Background image specified by project brief
-
-   const [keyboardVisible, setKeyboardVisible] = useState(false);
-
-   // configure Toast messages
-   const showSuccessToast = () => {
-      Toast.show({
-         type: 'success',
-         position: 'bottom',
-         bottomOffset: 150,
-         text1: 'Signed in Successfully!',
-         visibilityTime: 3000,
-      });
-   };
-   const showErrorToast = () => {
-      Toast.show({
-         type: 'error',
-         position: 'bottom',
-         bottomOffset: 150,
-         text1: 'Unable to sign in, contact developer or try later!',
-         visibilityTime: 3000,
-      });
-   };
+   const [keyboardVisible, setKeyboardVisible] = useState(false);  // Initialize keyboardVisible state variable for toggle effect
 
    // Sign in anonymously
    const signInUser = () => {
@@ -125,6 +101,7 @@ const Start = ({ navigation }) => {
    );
 }
 
+// ALL STYLESHEETS:
 const styles = StyleSheet.create({
    // Style for the background image
    image: {
@@ -218,5 +195,27 @@ const styles = StyleSheet.create({
       textAlign: 'center',  // Center the text inside the button
    }
 });
+
+// TOAST message definitions:
+// Success message
+const showSuccessToast = () => {
+   Toast.show({
+      type: 'success',
+      position: 'bottom',
+      bottomOffset: 150,
+      text1: 'Signed in Successfully!',
+      visibilityTime: 3000,
+   });
+};
+// Error message
+const showErrorToast = () => {
+   Toast.show({
+      type: 'error',
+      position: 'bottom',
+      bottomOffset: 150,
+      text1: 'Unable to sign in, contact developer or try later!',
+      visibilityTime: 3000,
+   });
+};
 
 export default Start;

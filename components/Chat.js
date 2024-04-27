@@ -3,7 +3,7 @@ import { StyleSheet, View, KeyboardAvoidingView, Platform, Button } from 'react-
 import { GiftedChat, Bubble, InputToolbar } from "react-native-gifted-chat";
 import { collection, addDoc, onSnapshot, query, orderBy } from 'firebase/firestore';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Toast from 'react-native-toast-message';
+import Toast from 'react-native-toast-message'; // TOAST configuration end of file below return statement and any styles
 import CustomActions from './CustomActions';
 import MapView from 'react-native-maps';
 
@@ -17,7 +17,7 @@ const Chat = ({ route, navigation, db, isConnected, storage }) => { // the route
    useEffect(() => {
       navigation.setOptions({ title: name });
    }, []);
-   
+
    let unsubMessages;
 
    // Query the messages collection in Firestore, create a listener for changes to the messages collection in Firestore
@@ -57,6 +57,7 @@ const Chat = ({ route, navigation, db, isConnected, storage }) => { // the route
    const loadCachedMessages = async () => {
       const cachedMessages = await AsyncStorage.getItem("chat_messages") || [];
       setMessages(JSON.parse(cachedMessages));
+      // showLoadedCachedMessagesToast();
    }
 
    // cacheMessages function to cache messages in AsyncStorage
@@ -101,18 +102,6 @@ const Chat = ({ route, navigation, db, isConnected, storage }) => { // the route
       if (isConnected) return <InputToolbar {...props} />;
       else return null;
    }
-
-   // LOGOUT FUNCTIONALITY BELOW
-   // configure the Toast message to show when the user logs out
-   const showLogoutToast = () => {
-      Toast.show({
-         type: 'success',
-         position: 'bottom',
-         bottomOffset: 150,
-         text1: 'Logged out Successfully!',
-         visibilityTime: 3000,
-      });
-   };
 
    // handleLogout function to clear AsyncStorage and navigate to the Start screen
    const handleLogout = async () => {
@@ -174,12 +163,12 @@ const Chat = ({ route, navigation, db, isConnected, storage }) => { // the route
    return (
       <View style={styles.container}>
          <GiftedChat
-            messages={messages}
-            renderInputToolbar={renderInputToolbar}
-            renderBubble={renderBubble}
-            onSend={messages => onSend(messages)}
-            renderActions={renderCustomActions}  // render the custom actions component, creates the circular button
-            renderCustomView={renderCustomView}   // render the custom view component, creates the map view
+            messages={messages} 
+            renderInputToolbar={renderInputToolbar} 
+            renderBubble={renderBubble}    
+            onSend={messages => onSend(messages)} 
+            renderActions={renderCustomActions} 
+            renderCustomView={renderCustomView} 
             user={{
                _id: userID,
                name: name
@@ -189,5 +178,26 @@ const Chat = ({ route, navigation, db, isConnected, storage }) => { // the route
       </View>
    )
 }
+
+// TOAST message definitions:
+// Logout message
+const showLogoutToast = () => {
+   Toast.show({
+      type: 'success',
+      position: 'bottom',
+      bottomOffset: 150,
+      text1: 'Logged out Successfully!',
+      visibilityTime: 3000,
+   });
+};
+const showLoadedCachedMessagesToast = () => {
+   Toast.show({
+      type: 'success',
+      position: 'bottom',
+      bottomOffset: 300,
+      text1: 'Loaded cached messages!',
+      visibilityTime: 3000,
+   });
+};
 
 export default Chat;

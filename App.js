@@ -2,10 +2,10 @@
 import Constants from 'expo-constants';
 
 // React and Expo imports
-import { StyleSheet, Alert } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
+import Toast, { BaseToast, ErrorToast, LoadingToast } from 'react-native-toast-message'; // Configuration end of file below styles
 import { useNetInfo } from '@react-native-community/netinfo';
 import { useEffect } from "react";
 
@@ -55,42 +55,6 @@ const App = () => {
    // Initialize Firebase Storage handler
    const storage = getStorage(app);
 
-   const toastConfig = {
-      success: (props) => (
-         <BaseToast
-            {...props}
-            style={{ borderLeftColor: 'green' }}
-            contentContainerStyle={{ paddingHorizontal: 15 }}
-            text1Style={{
-               fontSize: 17,
-               fontWeight: '700'
-            }}
-         />
-      ),
-      error: (props) => (
-         <ErrorToast
-            {...props}
-            style={{ borderLeftColor: 'red' }}
-            contentContainerStyle={{ paddingHorizontal: 15 }}
-            text1Style={{
-               fontSize: 17,
-               fontWeight: '700'
-            }}
-         />
-      ),
-   };
-
-   // Function to show a Toast message when the connection is lost
-   const showConnectionLostToast = () => {
-      Toast.show({
-         type: 'error',
-         position: 'bottom',
-         bottomOffset: 150,
-         text1: 'Connection lost!',
-         autoHide: false,
-         swipeable: true,
-      });
-   };
 
    // useNetInfo hook to get the current network connection status
    const connectionStatus = useNetInfo();
@@ -101,6 +65,7 @@ const App = () => {
          showConnectionLostToast();
          disableNetwork(db);
       } else if (connectionStatus.isConnected === true) {
+         showConnectionRestoredToast();
          enableNetwork(db);
       }
    }, [connectionStatus.isConnected]);
@@ -132,6 +97,7 @@ const App = () => {
    );
 }
 
+// Stylesheets for the App component
 const styles = StyleSheet.create({
    container: {
       flex: 1,
@@ -140,5 +106,65 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
    },
 });
+
+// Configure TOAST messages:
+const toastConfig = {
+   success: (props) => (
+      <BaseToast
+         {...props}
+         style={{ borderLeftColor: 'green' }}
+         contentContainerStyle={{ paddingHorizontal: 15 }}
+         text1Style={{
+            fontSize: 17,
+            fontWeight: '700'
+         }}
+      />
+   ),
+   error: (props) => (
+      <ErrorToast
+         {...props}
+         style={{ borderLeftColor: 'red' }}
+         contentContainerStyle={{ paddingHorizontal: 15 }}
+         text1Style={{
+            fontSize: 17,
+            fontWeight: '700'
+         }}
+      />
+   ),
+   loading: (props) => (
+      <LoadingToast
+         {...props}
+         style={{ borderLeftColor: 'blue' }}
+         contentContainerStyle={{ paddingHorizontal: 15 }}
+         text1Style={{
+            fontSize: 17,
+            fontWeight: '700'
+         }}
+      />
+   ),
+};
+
+// TOAST message definitions:
+// Function to show a Toast message when the connection is lost
+const showConnectionLostToast = () => {
+   Toast.show({
+      type: 'error',
+      position: 'bottom',
+      bottomOffset: 150,
+      text1: 'Connection lost!',
+      autoHide: false,
+      swipeable: true,
+   });
+};
+
+const showConnectionRestoredToast = () => {
+   Toast.show({
+      type: 'success',
+      position: 'bottom',
+      bottomOffset: 150,
+      text1: 'Connected!',
+      visibilityTime: 3000,
+   });
+}
 
 export default App;

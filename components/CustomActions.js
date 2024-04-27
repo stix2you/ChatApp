@@ -1,12 +1,47 @@
-import { TouchableOpacity, View, Text, StyleSheet, Alert } from "react-native";
+import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import Toast from 'react-native-toast-message';
 
 const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID }) => {
    const actionSheet = useActionSheet();
 
+   // TOAST message definitions:
+   // no permissions message
+   const showNoPermissionsToast = () => {
+      Toast.show({
+         type: 'error',
+         position: 'bottom',
+         bottomOffset: 150,
+         text1: "Permissions haven't been granted.",
+         visibilityTime: 3000,
+      });
+   };
+   // upload error message
+   const showUploadErrorToast = () => {
+      Toast.show({
+         type: 'error',
+         position: 'bottom',
+         bottomOffset: 150,
+         text1: 'Error uploading image!',
+         visibilityTime: 3000,
+      });
+   };
+   // location error message
+   const showLocationErrorToast = () => {
+      Toast.show({
+         type: 'error',
+         position: 'bottom',
+         bottomOffset: 150,
+         text1: 'Error fetching location!',
+         visibilityTime: 3000,
+      });
+   };
+
+
+   // function called when user presses the '+' button, opens action sheet menus,calls the appropriate function based on the user selection
    const onActionPress = () => {
       const options = ['Choose From Library', 'Take Picture', 'Send Location', 'Cancel'];
       const cancelButtonIndex = options.length - 1;
@@ -38,25 +73,32 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID })
       return `${userID}-${timeStamp}-${imageName}`;
    };
 
+   
+
    // Function to pick an image from the library
    const pickImage = async () => {
       let permissions = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (permissions?.granted) {
          let result = await ImagePicker.launchImageLibraryAsync();
          if (!result.canceled) await uploadAndSendImage(result.assets[0].uri);
-         else Alert.alert("Permissions haven't been granted.");
+         showNoPermissionsToast();
       }
    };
 
+   // Function to upload and send an image
    const uploadAndSendImage = async (imageURI) => {
-      const uniqueRefString = generateReference(imageURI);
-      const newUploadRef = ref(storage, uniqueRefString);
-      const response = await fetch(imageURI);
-      const blob = await response.blob();
-      uploadBytes(newUploadRef, blob).then(async (snapshot) => {
-         const imageURL = await getDownloadURL(snapshot.ref)
-         onSend({ image: imageURL })
-      });
+      try {
+         const uniqueRefString = generateReference(imageURI);
+         const newUploadRef = ref(storage, uniqueRefString);
+         const response = await fetch(imageURI);
+         const blob = await response.blob();
+         uploadBytes(newUploadRef, blob).then(async (snapshot) => {
+            const imageURL = await getDownloadURL(snapshot.ref)
+            onSend({ image: imageURL })
+         });
+      } catch (error) {
+         showUploadErrorToast();
+      }
    };
 
    // Function to take a photo
@@ -65,10 +107,11 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID })
       if (permissions?.granted) {
          let result = await ImagePicker.launchCameraAsync();
          if (!result.canceled) await uploadAndSendImage(result.assets[0].uri);
-         else Alert.alert("Permissions haven't been granted.");
+         showNoPermissionsToast();
       }
    };
 
+   // Function to get the user's location, including permissions fetching
    const getLocation = async () => {
       let permissions = await Location.requestForegroundPermissionsAsync();
       if (permissions?.granted) {
@@ -80,8 +123,8 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID })
                   latitude: location.coords.latitude,
                },
             });
-         } else Alert.alert("Error occurred while fetching location");
-      } else Alert.alert("Permissions haven't been granted.");
+         } else showLocationErrorToast();
+      } else showNoPermissionsToast();
    };
 
 
@@ -99,6 +142,7 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID })
    );
 }
 
+// Stylesheet
 const styles = StyleSheet.create({
    container: {
       width: 26,
