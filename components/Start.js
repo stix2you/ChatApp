@@ -51,7 +51,7 @@ const Start = ({ navigation }) => {
                accessible={true}
                accessibilityLabel="App Title"
                accessibilityRole="text">
-               App Title</Text>
+               Chat App</Text>
             <View style={styles.inputContainer}>
                <TextInput
                   style={styles.textInput}
