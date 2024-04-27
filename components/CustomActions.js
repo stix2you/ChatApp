@@ -46,8 +46,7 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID })
       if (permissions?.granted) {
          let result = await ImagePicker.launchImageLibraryAsync();
          if (!result.canceled) await uploadAndSendImage(result.assets[0].uri);
-         showNoPermissionsToast();
-      }
+      } else showNoPermissionsToast();
    };
 
    // Function to upload and send an image
@@ -71,9 +70,8 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID })
       let permissions = await ImagePicker.requestCameraPermissionsAsync();
       if (permissions?.granted) {
          let result = await ImagePicker.launchCameraAsync();
-         if (!result.canceled) await uploadAndSendImage(result.assets[0].uri);
-         showNoPermissionsToast();
-      }
+         if (!result.canceled) await uploadAndSendImage(result.assets[0].uri); 
+      } else showNoPermissionsToast();
    };
 
    // Function to get the user's location, including permissions fetching
