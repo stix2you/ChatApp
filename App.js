@@ -131,17 +131,6 @@ const toastConfig = {
          }}
       />
    ),
-   loading: (props) => (
-      <LoadingToast
-         {...props}
-         style={{ borderLeftColor: 'blue' }}
-         contentContainerStyle={{ paddingHorizontal: 15 }}
-         text1Style={{
-            fontSize: 17,
-            fontWeight: '700'
-         }}
-      />
-   ),
 };
 
 // TOAST message definitions:
