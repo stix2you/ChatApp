@@ -8,39 +8,6 @@ import Toast from 'react-native-toast-message';
 const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID }) => {
    const actionSheet = useActionSheet();
 
-   // TOAST message definitions:
-   // no permissions message
-   const showNoPermissionsToast = () => {
-      Toast.show({
-         type: 'error',
-         position: 'bottom',
-         bottomOffset: 150,
-         text1: "Permissions haven't been granted.",
-         visibilityTime: 3000,
-      });
-   };
-   // upload error message
-   const showUploadErrorToast = () => {
-      Toast.show({
-         type: 'error',
-         position: 'bottom',
-         bottomOffset: 150,
-         text1: 'Error uploading image!',
-         visibilityTime: 3000,
-      });
-   };
-   // location error message
-   const showLocationErrorToast = () => {
-      Toast.show({
-         type: 'error',
-         position: 'bottom',
-         bottomOffset: 150,
-         text1: 'Error fetching location!',
-         visibilityTime: 3000,
-      });
-   };
-
-
    // function called when user presses the '+' button, opens action sheet menus,calls the appropriate function based on the user selection
    const onActionPress = () => {
       const options = ['Choose From Library', 'Take Picture', 'Send Location', 'Cancel'];
@@ -72,8 +39,6 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID })
       const imageName = uri.split("/")[uri.split("/").length - 1];
       return `${userID}-${timeStamp}-${imageName}`;
    };
-
-   
 
    // Function to pick an image from the library
    const pickImage = async () => {
@@ -155,14 +120,47 @@ const styles = StyleSheet.create({
       borderColor: '#b2b2b2',
       borderWidth: 2,
       flex: 1,
+      alignItems: 'center',
    },
    iconText: {
       color: '#b2b2b2',
       fontWeight: 'bold',
-      fontSize: 16,
+      fontSize: 13,
       backgroundColor: 'transparent',
       textAlign: 'center',
    },
 });
+
+// TOAST message definitions:
+// no permissions message
+const showNoPermissionsToast = () => {
+   Toast.show({
+      type: 'error',
+      position: 'bottom',
+      bottomOffset: 150,
+      text1: "Permissions haven't been granted.",
+      visibilityTime: 3000,
+   });
+};
+// upload error message
+const showUploadErrorToast = () => {
+   Toast.show({
+      type: 'error',
+      position: 'bottom',
+      bottomOffset: 150,
+      text1: 'Error uploading image!',
+      visibilityTime: 3000,
+   });
+};
+// location error message
+const showLocationErrorToast = () => {
+   Toast.show({
+      type: 'error',
+      position: 'bottom',
+      bottomOffset: 150,
+      text1: 'Error fetching location!',
+      visibilityTime: 3000,
+   });
+};
 
 export default CustomActions;
