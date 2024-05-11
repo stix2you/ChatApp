@@ -5,10 +5,13 @@ import { useActionSheet } from '@expo/react-native-action-sheet';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Toast from 'react-native-toast-message';
 
+// CustomActions component, provides a custom action button for the user to 
+// send images, take photos, or send their location
 const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID }) => {
    const actionSheet = useActionSheet();
 
-   // function called when user presses the '+' button, opens action sheet menus,calls the appropriate function based on the user selection
+   // function called when user presses the '+' button, 
+   // opens action sheet menus,calls the appropriate function based on the user selection
    const onActionPress = () => {
       const options = ['Choose From Library', 'Take Picture', 'Send Location', 'Cancel'];
       const cancelButtonIndex = options.length - 1;
