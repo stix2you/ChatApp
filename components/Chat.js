@@ -159,22 +159,25 @@ const Chat = ({ route, navigation, db, isConnected, storage }) => { // the route
       return null;
    }
 
-   // return the GiftedChat component with props: messages, onSend function, and user prop -- see documentation for more props
+   // return the GiftedChat component with props: messages, renderInputToolbar, 
+   // renderBubble, onSend, renderCustomActions, renderCustomView, user
    return (
       <View style={styles.container}>
          <GiftedChat
-            messages={messages} 
-            renderInputToolbar={renderInputToolbar} 
-            renderBubble={renderBubble}    
-            onSend={messages => onSend(messages)} 
-            renderActions={renderCustomActions} 
-            renderCustomView={renderCustomView} 
+            messages={messages}
+            renderInputToolbar={renderInputToolbar}
+            renderBubble={renderBubble}
+            onSend={messages => onSend(messages)}
+            renderActions={renderCustomActions}
+            renderCustomView={renderCustomView}
             user={{
                _id: userID,
                name: name
             }}
          />
          {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
+         {/* KeyboardAvoidingView component to adjust the position of the 
+         input field when the keyboard is displayed */}
       </View>
    )
 }
