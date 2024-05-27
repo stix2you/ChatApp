@@ -1,11 +1,8 @@
-********************
-WELCOME TO CHAT APP!
-********************
+# WELCOME TO CHAT APP!
 
 
---------------------
-Project Description:
---------------------
+
+## Project Description:
 
 The ChatApp is a mobile app which provides users with a START screen, a very basic CHAT interface, and options to share images and their location.
 
@@ -13,9 +10,7 @@ Git Repo:  https://github.com/stix2you/ChatApp
 
 
 
-----------------------------------
-PROJECT SETUP FOR DEV ENVIRONMENT:
-----------------------------------
+## PROJECT SETUP FOR DEV ENVIRONMENT:
 
 - Download repo from above URL and install in a directory.
 
@@ -46,11 +41,9 @@ PROJECT SETUP FOR DEV ENVIRONMENT:
 
 
 
--------------
-DEPENDENCIES:
--------------
+## DEPENDENCIES:
 
-Dependencies as of the writing of this README.MD file, taken from package.json:
+### Dependencies as of the writing of this README.MD file, taken from package.json:
 
     @react-native-async-storage/async-storage: 1.21.0,
     @react-native-community/netinfo: 11.1.0,
@@ -75,9 +68,7 @@ Dependencies as of the writing of this README.MD file, taken from package.json:
 
 
 
----------------------------------------------
-ADDITIONAL DEV ENVIRONMENT SETUP FOR DEVICES:
----------------------------------------------
+## DEV ENVIRONMENT SETUP FOR DEVICES USING EXPO GO:
 
 - Install Expo Go on a mobile device by downloading it from the relevant app store
 
@@ -93,12 +84,13 @@ ADDITIONAL DEV ENVIRONMENT SETUP FOR DEVICES:
 
 
 
-*** NOTE: In order to use the app, you must set up a Firebase Firestore database, create a .env file for authentication, and set up storage parameters
-Instructions follow on how to do this with specifics for this application.  It is recommended you follow these instructions or guidelines.
 
-------------------------
-FIREBASE DATABASE SETUP:
-------------------------
+
+## FIREBASE DATABASE SETUP:
+
+In order to use the app, you must set up a Firebase Firestore database, create a .env file for authentication, and set up storage parameters
+
+Instructions follow on how to do this with specifics for this application.  It is recommended you follow these instructions or guidelines.
 
 - Setup a Firebase database at https://firebase.google.com/
 
@@ -132,9 +124,7 @@ FIREBASE DATABASE SETUP:
 
 
 
------------------------------------------------------
-BUILDING THE AUTHENTICATION FILE FOR FIREBASE ACCESS:
------------------------------------------------------
+## BUILDING THE AUTHENTICATION FILE FOR FIREBASE ACCESS:
 
 - In Firebase, click 'Build' --> 'Authentication' on the left side menu
 
@@ -167,9 +157,7 @@ BUILDING THE AUTHENTICATION FILE FOR FIREBASE ACCESS:
 
 
 
----------------------------------------
-FIREBASE STORAGE SETUP FOR MEDIA FILES:
----------------------------------------
+## FIREBASE STORAGE SETUP FOR MEDIA FILES:
 
 - This is required in order to be able to store images in Firestore
 
