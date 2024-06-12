@@ -40,6 +40,20 @@ Git Repo:  https://github.com/stix2you/ChatApp
    To add an android device, hit 'a'
 
 
+**Note: As Expo SDK is upgraded, the old version installed in the app may not work with Expo Go.
+In which case: Install the new version of the expo SDK (at the time of this writing it was SDK 51)
+
+   npm install expo@latest
+
+...then upgrade dependencies:
+
+   npx expo install --fix
+
+Be sure to read the SDK changelogs for the SDK version you are upgrading to.  They contain information about changes and depreciations which may affect the app.
+
+https://docs.expo.dev/workflow/upgrading-expo-sdk-walkthrough/#sdk-changelogs
+
+
 
 ## DEPENDENCIES:
 
