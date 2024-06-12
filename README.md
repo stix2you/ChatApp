@@ -14,7 +14,7 @@ Git Repo:  https://github.com/stix2you/ChatApp
 
 - Download repo from above URL and install in a directory.
 
-- In terminal windown within that directory:
+- In terminal window within that directory:
 
 - Set up Node to version 16.19.0
 
